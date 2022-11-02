@@ -15,6 +15,8 @@ def main():
         # Create a game board.
         game_board = []
         board_size=int(input("\nWhat is your board size (must be an integer larger than 1):"))
+        while board_size == 1 or board_size < 1:
+            board_size = int(input("Please enter a number greater than 1:"))
         create_game_board(board_size, game_board)
 
         # Print the game board.
@@ -88,6 +90,7 @@ def create_game_board(size, game_board):
             counter += 1
         # Appends the list of values to the game board list.    
         game_board.append(row_index)
+       
 
 
 def update_game_board(player, location, size, game_board):
