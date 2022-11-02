@@ -4,14 +4,17 @@ CSE210 | Programming with Classes
 W01 Prove: Developer
 """
 # The game board is a list of rows. Each row is a list of values.
+
 game_board = []
 
+
 def main():
+    winner = False
     play_again = input("\nDo you want to play Tic-Tac_Toe? (y/n): ")
     while play_again == 'y':
         # Create a game board.
         game_board = []
-        board_size=int(input("\nWhat is your board size:"))
+        board_size=int(input("\nWhat is your board size (must be an integer larger than 1):"))
         create_game_board(board_size, game_board)
 
         # Print the game board.
@@ -28,9 +31,10 @@ def main():
                 location = int(input(f"X's turn to choose a square 1-{board_size**2}:"))
                 counter = update_game_board(player_1, location, board_size, game_board)
                 print_game_board(board_size, game_board)
-                print(f'counter is {counter}')
+                winner = check_for_win(board_size, player_1, game_board)
+                if winner == True:
+                    break
                 count += counter
-                print(f'player1 count {count}')
             
                 # Checking for end of game.
                 if count == (board_size**2):
@@ -41,9 +45,11 @@ def main():
                     location = int(input(f"O's turn to choose a square 1-{board_size**2}:"))
                     counter = update_game_board(player_2, location, board_size, game_board)
                     print_game_board(board_size, game_board)
-                    print(f'player2 counter is {counter}')
+                    winner = check_for_win(board_size, player_2, game_board)
+                    if winner == True:
+                        break
                     count += counter
-                    print(f'player2 count {count}')
+  
 
 
         except IndexError as index_err:
@@ -82,7 +88,7 @@ def create_game_board(size, game_board):
             counter += 1
         # Appends the list of values to the game board list.    
         game_board.append(row_index)
-    print(game_board)
+
 
 def update_game_board(player, location, size, game_board):
     try:
@@ -96,6 +102,7 @@ def update_game_board(player, location, size, game_board):
 
         a_row[column_index] = player
         game_board[row_index] = a_row
+  
         return 1
     except ValueError as val_err:
         # This code will be executed if the user enters an integer that is not on the game board.
@@ -103,7 +110,59 @@ def update_game_board(player, location, size, game_board):
         print(type(val_err).__name__, val_err, sep=": ")
         print("That square is not available. Better luck next time.\n")
         return 0
-         
+
+def check_for_win(size, player, game_board):
+    win = False
+    # Create winning sequence.
+    winning_sequence = []
+    for index in range(0, size):
+        winning_sequence.append(player)
+
+    # Compare winning sequence to each game board row.
+    for index in range(0, size):
+        if game_board[index] == winning_sequence:
+            print(f"{player} wins!")
+            win = True
+            return win
+
+    # Create game board column.  
+    for index in range(0, size):
+        column = []
+        column_index = index
+        for index in range (0, size):
+            row = game_board[index]
+            column.append(row[column_index])    
+        # Compare winning sequence to game board column.
+        if column == winning_sequence:
+            print(f"{player} wins!")
+            win = True
+            return win  
+
+    # Create game board diagonal.
+    diagonal = []
+    for index in range (0, size):
+        row = game_board[index]
+        diagonal.append(row[index])
+    # Compare winning sequence to game board diagonal.    
+    if diagonal == winning_sequence:
+        print(f"{player} wins!")
+        win = True
+        return win  
+            
+    # Create game board diagonal2.
+    diagonal2 = []
+    column = size-1
+    for index in range (0, size):
+        row = game_board[index]
+        diagonal2.append(row[column])
+        column -= 1
+    # Compare winning sequence to game board diagonal2.    
+    if diagonal2 == winning_sequence:
+        print(f"{player} wins!")
+        win = True
+        return win 
+
+
 
 def print_game_board(size, game_board):
     
@@ -115,17 +174,6 @@ def print_game_board(size, game_board):
         for index in range(0, size-1) : 
             print(f'+-------', end="") 
         print()   
-        
-        
-        
-        
-
-
-
-
-        
-   
-
 
 
 if __name__ == "__main__":
