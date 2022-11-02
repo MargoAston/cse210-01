@@ -7,39 +7,67 @@ W01 Prove: Developer
 game_board = []
 
 def main():
-    play_again = input("Do you want to play Tic-Tac_Toe? (y/n): ")
+    play_again = input("\nDo you want to play Tic-Tac_Toe? (y/n): ")
     while play_again == 'y':
+        # Create a game board.
         game_board = []
         board_size=int(input("\nWhat is your board size:"))
         create_game_board(board_size, game_board)
+
+        # Print the game board.
         print_game_board(board_size, game_board)
     
-        marker = "X"
-        location = int(input(f"X's turn to choose a square 1-{board_size**2}:"))
-        update_game_board(marker, location, board_size, game_board)
-        print_game_board(board_size, game_board)
-        count = 1
-        for index in range (0, (board_size**2)-1, 2):
-            
-            marker = "O"
-            location = int(input(f"O's turn to choose a square 1-{board_size**2}:"))
-            update_game_board(marker, location, board_size, game_board)
-            print_game_board(board_size, game_board)
-            count += 1
-            print(count)
-            if count == (board_size**2):
-                print(count)
-                break
-            else:
-                marker = "X"
+        try:
+            # Update the game board.
+            count = 0
+            counter = 0
+            player_1 = "X"
+            player_2 = "O"
+            while count < (board_size**2):
+                # Player 1's turn.
                 location = int(input(f"X's turn to choose a square 1-{board_size**2}:"))
-                update_game_board(marker, location, board_size, game_board)
+                counter = update_game_board(player_1, location, board_size, game_board)
                 print_game_board(board_size, game_board)
-                count += 1
+                print(f'counter is {counter}')
+                count += counter
+                print(f'player1 count {count}')
+            
+                # Checking for end of game.
+                if count == (board_size**2):
+                    break
 
-        play_again = input("Do you want to play again (y/n): ")
+                else:
+                    # Player 2's turn.
+                    location = int(input(f"O's turn to choose a square 1-{board_size**2}:"))
+                    counter = update_game_board(player_2, location, board_size, game_board)
+                    print_game_board(board_size, game_board)
+                    print(f'player2 counter is {counter}')
+                    count += counter
+                    print(f'player2 count {count}')
 
 
+        except IndexError as index_err:
+            # This code will be executed if the user enters a valid integer for the square number, but the integer is greater than the number of squares in the game.
+            print()
+            print(type(index_err).__name__, index_err, sep=": ")
+            length = len(game_board)
+            if location < 0:
+                print(f"{location} is a negative integer.")
+            else:
+                print(f"{location} is greater than the number of squares in the game.")
+                print(f"There are only {length**2} squares in game.")
+            print(f"Start a new game and enter a square number between 1 and {length**2}.")
+
+        # Checking for start of new game.
+        play_again = input("Do you want to play again (y/n): ")  
+        while play_again != 'y':
+            if play_again == 'n':
+                print("Thank you for playing, see you next time.")
+                break
+            play_again=input('invalid entry. Please enter (y/n)')
+
+    print("Thank you for visiting Tic-Tac_Toe\n")
+    
 
 def create_game_board(size, game_board):
     counter = 1
@@ -56,16 +84,26 @@ def create_game_board(size, game_board):
         game_board.append(row_index)
     print(game_board)
 
-def update_game_board(marker, location, size, game_board):
-    # Find the correct row.
-    row_number = int((location / size) + .9)
-    row_index = (row_number - 1)
+def update_game_board(player, location, size, game_board):
+    try:
+        # Find the correct row.
+        row_number = int((location / size) + .9)
+        row_index = (row_number - 1) 
+        a_row = game_board[row_index]
 
-    a_row = game_board[row_index]
-    column_index = a_row.index(location)
-    a_row[column_index] = marker
-    game_board[row_index] = a_row
+        # Find the correct column.
+        column_index = a_row.index(location)
 
+        a_row[column_index] = player
+        game_board[row_index] = a_row
+        return 1
+    except ValueError as val_err:
+        # This code will be executed if the user enters an integer that is not on the game board.
+        print()
+        print(type(val_err).__name__, val_err, sep=": ")
+        print("That square is not available. Better luck next time.\n")
+        return 0
+         
 
 def print_game_board(size, game_board):
     
